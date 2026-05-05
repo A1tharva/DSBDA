@@ -1,0 +1,63 @@
+# Hadoop Standalone Setup Commands (Ubuntu)
+
+# 1. Update System
+
+sudo apt update && sudo apt upgrade -y
+
+# 2. Install Java
+
+sudo apt install openjdk-11-jdk -y
+
+# 3. Verify Java
+
+java -version
+
+# 4. Download Hadoop
+
+wget https://downloads.apache.org/hadoop/common/hadoop-3.3.6/hadoop-3.3.6.tar.gz
+
+# 5. Extract Hadoop
+
+tar -xvzf hadoop-3.3.6.tar.gz
+mv hadoop-3.3.6 ~/hadoop
+
+# 6. Set Environment Variables
+
+echo 'export HADOOP_HOME=$HOME/hadoop' >> ~/.bashrc
+echo 'export PATH=$PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin' >> ~/.bashrc
+echo 'export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64' >> ~/.bashrc
+
+# Apply changes
+
+source ~/.bashrc
+
+# 7. Set JAVA_HOME in Hadoop
+
+sed -i 's|^# export JAVA_HOME=.*|export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64|' $HADOOP_HOME/etc/hadoop/hadoop-env.sh
+
+# 8. Verify Hadoop Installation
+
+hadoop version
+
+# 9. Create Test Directory
+
+mkdir ~/hadoop-test
+cd ~/hadoop-test
+
+# 10. Create Input Files
+
+mkdir input
+echo "hadoop mapreduce test" > input/file1.txt
+echo "learning hadoop is fun" > input/file2.txt
+
+# 11. Run MapReduce WordCount
+
+hadoop jar $HADOOP_HOME/share/hadoop/mapreduce/hadoop-mapreduce-examples-*.jar wordcount input output
+
+# 12. View Output
+
+cat output/part-r-00000
+
+# 13. Cleanup for Re-run
+
+rm -rf output
